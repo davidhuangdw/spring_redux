@@ -1,13 +1,27 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
 import {hot} from "react-hot-loader"
+import {MuiThemeProvider} from "@material-ui/core"
+import {Provider} from "react-redux"
+import store from "./store"
+import './App.css';
+import {MyTheme} from './constants'
+import {MyAppBar} from "./components"
+import Activities from "./activities/Activities"
+
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-      </div>
+      <Provider store={store}>
+        <MuiThemeProvider theme={MyTheme}>
+          <div className="App">
+
+            <MyAppBar title="My App"/>
+            <Activities/>
+
+          </div>
+        </MuiThemeProvider>
+      </Provider>
     );
   }
 }
