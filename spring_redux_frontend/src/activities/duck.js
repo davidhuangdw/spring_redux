@@ -1,45 +1,38 @@
 import {createSelector} from 'reselect'
 import axios from "axios"
-import {debug} from '../utils'
+import {debug, idModelFromList, Moment, today} from '../utils'
 
 
 // action types:
 const ACTIVITIES_API_FAIL = "ACTIVITIES_API_FAIL";
 const ACTIVITIES_API_PENDING = "ACTIVITIES_API_PENDING";
 const ACTIVITIES_FETCH_SUCC = "ACTIVITIES_FETCH_SUCC";
-const ACTIVITIES_FETCH_ALL = "ACTIVITIES_FETCH_ALL";
+
 
 // actions:
-export function doActivityFetchAllPending(){
-  return {type: ACTIVITIES_API_PENDING, apiType: 'fetchAll'}
-}
+export const doActivityFetchAllPending = () =>({type: ACTIVITIES_API_PENDING, apiType: 'fetchAll'});
+export const doActivityFetchAllFail = error => ({type: ACTIVITIES_API_FAIL, apiType: 'fetchAll', error: error });
+export const doActivityFetchAllSucc = activities => ({type: ACTIVITIES_FETCH_SUCC, activities});
 
-export function doActivityFetchAllFail(error){
-  return {type: ACTIVITIES_API_FAIL, apiType: 'fetchAll', error: error }
-}
-
-export function doActivityFetchAllSucc(activities){
-  return {type: ACTIVITIES_FETCH_SUCC, activities}
-}
-
-export function doActivityFetchAll(){
-  return dispatch => {
-    dispatch(doActivityFetchAllPending());
-    axios.get("/activities")
-      .then(
-        payload => dispatch(doActivityFetchAllSucc(payload.data._embedded.activities)),
-        error => dispatch(doActivityFetchAllFail(error))
-      )
-  }
-}
+export const doActivityFetchAll = () => dispatch => {
+  dispatch(doActivityFetchAllPending());
+  axios.get("/activities")
+    .then(
+      payload => dispatch(doActivityFetchAllSucc(payload.data._embedded.activities)),
+      error => dispatch(doActivityFetchAllFail(error))
+    )
+};
 
 
 
 // state:
 const initialState = {
-  list:{}, // id as key
+  model:{}, // id as key
+
+  // view:
   newActivity:{},
   updateActivity:{},
+  day: today(),
 
   // api status:
   fetchAll:{},
@@ -50,23 +43,27 @@ const initialState = {
 
 // selectors:
 const getActivitiesState = states => states.activitiesState;
-const getActivitiesList = createSelector(getActivitiesState, state => state.list);
-export const getFetchAll = createSelector(getActivitiesState, state => state.fetchall);
-export const getActivitiesArray = createSelector(getActivitiesList, list => Object.keys(list).map(k => list[k]));
+const getActivitiesModel = createSelector(getActivitiesState, state => state.model);
+export const getFetchAll = createSelector(getActivitiesState, state => state.fetchAll);
+export const getDay = createSelector(getActivitiesState, state => state.day);
+export const getActivitiesArray = createSelector(getActivitiesModel, list => Object.keys(list).map(k => list[k]));
+export const getDayActivitiesArray = createSelector(getActivitiesArray, getDay, (list, day) => {
+  let nextDay = day.clone().add(1, 'day');
+  return list.filter(({from,to}) => day < Moment(to) && Moment(from) < nextDay);
+});
 
 // reducer
 export default function reducer(state=initialState, action){
-  let {list, fetchAll} = state;
+  let {model, fetchAll} = state;
   let {type, apiType} = action;
   let apiStatus;
 
   switch (type) {
     case ACTIVITIES_FETCH_SUCC:
-      let byId = action.activities.reduce((ret, activity) => (activity.id ? {...ret, [activity.id]:activity} : ret),
-        {});
-      list = {...list, ...byId};
+      let {newModel} = idModelFromList(action.activities, {model});
+      model = newModel;
       fetchAll = {...fetchAll, pending: false, error: null};
-      return {...state, list, getAll: fetchAll};
+      return {...state, model, fetchAll};
 
     case ACTIVITIES_API_FAIL:
       apiStatus = state[apiType];

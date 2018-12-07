@@ -1,5 +1,13 @@
 .App {
   text-align: center;
+  font-family: "Lantinghei SC";
+  font-size: 0.9em;
+}
+
+.activities-day{
+  text-align: left;
+  display: flex;
+  padding: 1em;
 }
 
 .App-logo {
