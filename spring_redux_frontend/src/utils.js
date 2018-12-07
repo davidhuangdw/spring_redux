@@ -42,6 +42,29 @@ export const range = (k, {begin=0}={}) => {     // begin <= v < begin+k
   return ret;
 };
 
+export const HOUR_FORMAT = "HH:mm";
 export const nextKHours = (baseMoment, k) => range(k).map(i => baseMoment.clone().add(i, 'hours'));
 export const hourDuration = (from, to) => moment.duration(moment(to) - moment(from)).asHours();
-export const hourTimeFormat = time => moment(time).format("HH:mm");
+export const hourTimeFormat = time => moment(time).format(HOUR_FORMAT);
+export const parseHourFormat = str => moment(str, HOUR_FORMAT);
+export const joinDayHour = (day, hourStr) => {
+  let hourTime = parseHourFormat(hourStr);
+  return day.clone().hour(hourTime.hour()).minute(hourTime.minute());
+};
+
+export const validateActivityRequestBody = ({beginHour, endHour, description, category}) => {
+  let begin = parseHourFormat(beginHour);
+  let end = parseHourFormat(endHour);
+  let errors = [];
+  if(!category) errors.push("Category is required");
+  if(!begin.isValid()) errors.push("Begin is invalid");
+  if(!end.isValid()) errors.push("End is invalid");
+  if(begin >= end) errors.push("Begin shouldn't be great than End");
+  return errors;
+};
+
+export const buildActivityPayload = ({beginHour, endHour, description, category, day}) => {
+  let from = joinDayHour(day, beginHour);
+  let to = joinDayHour(day, endHour);
+  return {from, to,description, category};
+};

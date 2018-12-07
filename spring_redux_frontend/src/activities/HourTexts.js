@@ -5,11 +5,14 @@ import {HOUR_HEIGHT} from "../constants";
 
 
 
-const HourTexts = ({day, xsWidth=1}) => {
+const HourTexts = ({day, showNewActivity, xsWidth=1}) => {
   return (
-    <Grid container item xs={xsWidth} style={{textAlign: "right", paddingRight:"10px"}}>
+    <Grid container item xs={xsWidth}
+          style={{textAlign: "right", paddingRight:"10px"}}>
       {nextKHours(day, 24).map(h =>
-        <Grid key={h} item xs={12} style={{height: `${HOUR_HEIGHT}em`}}>
+        <Grid key={h} item xs={12}
+              onDoubleClick={e => showNewActivity(h)}
+              style={{height: `${HOUR_HEIGHT}em`}}>
           {hourTimeFormat(h)}
         </Grid>
       )}

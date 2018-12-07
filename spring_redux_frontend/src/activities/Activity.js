@@ -26,7 +26,7 @@ const Activity = ({activity, day}) => {
   };
   return (
     <div {...{style}} >
-      <div style={{margin: "0.5em"}}>
+      <div style={{marginLeft: "0.5em"}}>
         <span> {`${hourTimeFormat(from)} - ${hourTimeFormat(to)}`} </span>
         <br/>
         <span> {description} </span>
