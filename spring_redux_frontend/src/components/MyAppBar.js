@@ -1,5 +1,5 @@
 import React from "react"
-import {AppBar, Toolbar, Typography, IconButton, } from "@material-ui/core"
+import {AppBar, Toolbar, IconButton, } from "@material-ui/core"
 import {Menu} from "@material-ui/icons"
 import Day from "../activities/Day";
 

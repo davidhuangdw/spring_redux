@@ -34,6 +34,7 @@ export const idModelFromList = (list, {model={}, tempId=10000}) => {
 };
 
 export const today = () => moment().startOf('day');
+export const isToday = time => time.startOf('day').isSame(today());
 
 export const range = (k, {begin=0}={}) => {     // begin <= v < begin+k
   let ret = [];
@@ -51,6 +52,7 @@ export const joinDayHour = (day, hourStr) => {
   let hourTime = parseHourFormat(hourStr);
   return day.clone().hour(hourTime.hour()).minute(hourTime.minute());
 };
+export const dayFormat = time => (isToday(time) ? "(今天)" : "") + time.format('ll');
 
 export const validateActivityRequestBody = ({beginHour, endHour, description, category}) => {
   let begin = parseHourFormat(beginHour);
@@ -63,8 +65,9 @@ export const validateActivityRequestBody = ({beginHour, endHour, description, ca
   return errors;
 };
 
-export const buildActivityPayload = ({beginHour, endHour, description, category, day}) => {
-  let from = joinDayHour(day, beginHour);
-  let to = joinDayHour(day, endHour);
-  return {from, to,description, category};
+export const buildActivityPayload = ({id, beginHour, endHour, description, category, day}) => {
+  let from = joinDayHour(day, beginHour).toJSON();
+  let to = joinDayHour(day, endHour).toJSON();
+  return {id, from, to,description, category};
 };
+
