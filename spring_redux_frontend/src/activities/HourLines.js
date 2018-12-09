@@ -8,10 +8,10 @@ const style = {
   borderTop:"0.1em dashed #CCCCCC"
 };
 
-const HourLines = ({day, showNewActivity}) => {
+const HourLines = ({day, makeOnDoubleClickHour}) => {
   return (nextKHours(day, 24).map(h =>
       <Grid key={h} item xs={12}
-            onDoubleClick={e => showNewActivity(h)}
+            onDoubleClick={makeOnDoubleClickHour(h)}
             style={style}>
       </Grid>
   ));

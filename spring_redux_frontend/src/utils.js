@@ -33,8 +33,10 @@ export const idModelFromList = (list, {model={}, tempId=10000}) => {
   return {newModel, newTempId};
 };
 
-export const today = () => moment().startOf('day');
-export const isToday = time => time.startOf('day').isSame(today());
+export const startOfDay = time => moment(time).startOf('day');
+export const today = () => startOfDay();
+export const isSameDay = (a, b) => startOfDay(moment(a)).isSame(startOfDay(moment(b)));
+export const isToday = time => isSameDay(time, today());
 
 export const range = (k, {begin=0}={}) => {     // begin <= v < begin+k
   let ret = [];
@@ -43,21 +45,41 @@ export const range = (k, {begin=0}={}) => {     // begin <= v < begin+k
   return ret;
 };
 
+export const compareValue = ((a,b)=> a===b ? 0 : a<b ? -1 : 1);
+export const maxBy = (list, compare=compareValue) => list.reduce((max, v)=> max===undefined || compare(v, max) >= 0 ? v : max, undefined);
+export const minBy = (list, compare=compareValue) => list.reduce((min, v)=> min===undefined || compare(v, min) < 0 ? v : min, undefined);
+export const compareWithIndex = compare => (a, ai, b, bi) => compare(a,b)===0 ? compareValue(ai, bi) : compare(a,b);
+export const findPrev = (x, list, compare=compareValue) => {
+  if(!x) return;
+  let ix = list.findIndex(v => v===x);
+  if(ix === undefined) return;
+
+  let comp = compareWithIndex(compare);
+  let smallerList = list.filter((v,i) => comp(v, i, x, ix) < 0);
+
+  let maxPair = maxBy(smallerList.map((v,i)=>[v,i]), (pa,pb)=>comp(...pa, ...pb));
+  return maxPair && maxPair[0];
+};
+export const findNext = (x, list, compare=compareValue) => findPrev(x, [...list].reverse(), (a,b)=>-compare(a,b));
+
+export const maxMoment = (x, y) => moment(x) < moment(y) ? moment(y) : moment(x);
+export const minMoment = (x, y) => moment(x) < moment(y) ? moment(x) : moment(y);
 export const HOUR_FORMAT = "HH:mm";
 export const nextKHours = (baseMoment, k) => range(k).map(i => baseMoment.clone().add(i, 'hours'));
 export const hourDuration = (from, to) => moment.duration(moment(to) - moment(from)).asHours();
 export const hourTimeFormat = time => moment(time).format(HOUR_FORMAT);
 export const parseHourFormat = str => moment(str, HOUR_FORMAT);
-export const joinDayHour = (day, hourStr) => {
-  let hourTime = parseHourFormat(hourStr);
+export const joinDayHour = (day, hourTime) => {
   return day.clone().hour(hourTime.hour()).minute(hourTime.minute());
 };
 export const dayFormat = time => (isToday(time) ? "(今天)" : "") + time.format('ll');
 
-export const validateActivityRequestBody = ({beginHour, endHour, description, category}) => {
+export const validateActivityRequestBody = ({beginHour, endHour, crossDay, description, category}) => {
   let begin = parseHourFormat(beginHour);
   let end = parseHourFormat(endHour);
+  if(crossDay) end.add(1, 'day');
   let errors = [];
+
   if(!category) errors.push("Category is required");
   if(!begin.isValid()) errors.push("Begin is invalid");
   if(!end.isValid()) errors.push("End is invalid");
@@ -65,9 +87,10 @@ export const validateActivityRequestBody = ({beginHour, endHour, description, ca
   return errors;
 };
 
-export const buildActivityPayload = ({id, beginHour, endHour, description, category, day}) => {
-  let from = joinDayHour(day, beginHour).toJSON();
-  let to = joinDayHour(day, endHour).toJSON();
-  return {id, from, to,description, category};
+export const buildActivityPayload = ({id, beginHour, endHour, crossDay, description, category, day}) => {
+  let plus = crossDay ? 1 : 0;
+  let from = joinDayHour(day, parseHourFormat(beginHour)).toJSON();
+  let to = joinDayHour(day, parseHourFormat(endHour)).add(plus, 'day').toJSON();
+  return {id, from, to, description, category};
 };
 

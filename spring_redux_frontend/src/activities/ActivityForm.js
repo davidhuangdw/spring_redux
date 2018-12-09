@@ -1,10 +1,12 @@
 import React from 'react';
 import {dayFormat} from "../utils";
 import ErrorMessages from "../components/ErrorMessages";
-import {TextField, Button} from "@material-ui/core"
+import {TextField, Button, FormControlLabel, Checkbox} from "@material-ui/core"
 
-const ActivityForm = ({day, beginHour, endHour, description, category, inputErrors,
-                        pending, requestError, changeText, onSave, disableSave, children}) => {
+const buttonStyle = {margin: "0.5em"};
+
+const ActivityForm = ({day, beginHour, endHour, crossDay, description, category, inputErrors,
+                        pending, requestError, changeText, toggleCrossDay, onSave, disableSave, children}) => {
   return (
     <div>
       { dayFormat(day) }
@@ -13,14 +15,27 @@ const ActivityForm = ({day, beginHour, endHour, description, category, inputErro
         <TextField name="beginHour" label="Begin"
                    value={beginHour} onChange={changeText}/> <br/>
         <TextField name="endHour" label="End"
-                   value={endHour} onChange={changeText}/> <br/>
+                   value={endHour} onChange={changeText}/>
+        <br/>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={crossDay}
+              onChange={toggleCrossDay}
+              value="crossDay"
+              color="default"
+            />
+          }
+          label="Cross Day"
+        />
+        <br/>
         <TextField name="description" label="Description" multiline
                    value={description} onChange={changeText}/> <br/>
         <TextField name="category" label="Category"
                    value={category} onChange={changeText}/> <br/>
       </form>
 
-      <Button variant="contained" color="primary" style={{margin: "0.5em"}}
+      <Button variant="contained" color="primary" style={buttonStyle}
               disabled={disableSave} onClick={onSave}> Save </Button>
 
       {children}

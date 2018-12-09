@@ -1,23 +1,20 @@
 import React, {Component} from 'react';
-import {debug, hourDuration, hourTimeFormat} from "../utils";
+import {hourDuration, hourTimeFormat, maxMoment, minMoment} from "../utils";
 import {HOUR_HEIGHT} from "../constants";
 
 const margin = 0.1;
 
 class Activity extends Component {
 
-  focus = e => {
-    let {doFocusActivity, activity} = this.props;
-    e.stopPropagation();
-    doFocusActivity(activity.id)
-  };
-
   render(){
-    let {activity, day, focused,  showEditActivity} = this.props;
+    let {activity, day, focused, onClick, onDoubleClick} = this.props;
     let {from, to, description, category} = activity;
 
-    let height = hourDuration(from, to) * HOUR_HEIGHT - margin * 2;
-    let offset = hourDuration(day, from) * HOUR_HEIGHT;
+
+    let offset = hourDuration(day, maxMoment(from,day)) * HOUR_HEIGHT;
+    let height = hourDuration(maxMoment(from, day), minMoment(to, day.clone().add(1, 'day'))) * HOUR_HEIGHT - margin * 2;
+    if(height < 1.2) height = 1.2; // enough room for text..
+
     let opacity = focused ? 0.95 : 0.75;
 
     let style = {
@@ -35,12 +32,10 @@ class Activity extends Component {
       position: "absolute",
     };
     return (
-      <div {...{style}}
-           onClick={this.focus}
-           onDoubleClick={() => showEditActivity(activity)} >
+      <div {...{style, onClick, onDoubleClick}}>
         <div style={{marginLeft: "0.5em"}}>
           <span> {`${hourTimeFormat(from)} - ${hourTimeFormat(to)}  [${category}]`} </span>
-          <br/>
+          { height>2 ? <br/> : null}
           <span> {description} </span>
         </div>
       </div>

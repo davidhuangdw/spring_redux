@@ -10,12 +10,13 @@ const ACTIVITIES_FETCH_SUCC = "ACTIVITIES_FETCH_SUCC";
 const ACTIVITY_POST_SUCC = "ACTIVITY_POST_SUCC";
 const ACTIVITY_PATCH_SUCC = "ACTIVITY_PATCH_SUCC";
 const ACTIVITY_DELETE_SUCC = "ACTIVITY_DELETE_SUCC";
-
 const ACTIVITY_FOCUSED = "ACTIVITY_FOCUSED";
+const ACITIVITES_CHANGE_DAY = "ACITIVITES_CHANGE_DAY";
 
 
 // actions:
 export const doFocusActivity = focusedActivityId => ({type: ACTIVITY_FOCUSED, focusedActivityId});
+export const doChangeDay = newDay => ({type: ACITIVITES_CHANGE_DAY, newDay});
 
 export const doActivityFetchAllPending = () =>({type: ACTIVITIES_API_PENDING, apiType: 'fetchAll'});
 export const doActivityFetchAllFail = error => ({type: ACTIVITIES_API_FAIL, apiType: 'fetchAll', error: error });
@@ -104,10 +105,13 @@ export const getDayActivitiesArray = createSelector(getActivitiesArray, getDay, 
 // reducer
 export default function reducer(state=initialState, action){
   let {model, fetchAll, post, patch, deleteStatus} = state;
-  let {type, apiType, error, activities, activity, deleteId, focusedActivityId} = action;
+  let {type, apiType, error, activities, activity, deleteId, focusedActivityId, newDay} = action;
   let apiStatus;
 
   switch (type) {
+    case ACITIVITES_CHANGE_DAY:
+      return {...state, day: Moment(newDay).startOf('day'),focusedActivityId: undefined};
+
     case ACTIVITY_FOCUSED:
       return {...state, focusedActivityId};
 
