@@ -60,9 +60,7 @@ class ActivitiesPage extends Component{
     doChangeDay(day.clone().add(k, 'days'));
   };
 
-  inDialog = () => this.deleteActivityDialog.visible()
-    || this.newActivityDialog.visible()
-    || this.editActivityDialog.visible();
+  inDialog = () => !![this.deleteActivityDialog, this.newActivityDialog, this.editActivityDialog].find(d => d.visible());
 
   makeOnDoubleClickHour = beginHour => e => !this.inDialog() && this.newActivityDialog.show(beginHour);    // due to late init newActivityDialog
   makeOnDoubleClickActivity = activity => e => !this.inDialog() && this.editActivityDialog.show(activity);
@@ -78,7 +76,7 @@ class ActivitiesPage extends Component{
       <Grid container >
 
         <Grid container item xs={8} onClick={()=> focusedActivityId && doUnfocusActivity()}>
-          <Grid item container xs={12}> <DayControl /> </Grid>
+          <Grid item container xs={12} style={{margin: "0.5em 0"}}> <DayControl/> </Grid>
 
           <HourTexts {...{xsWidth: 1, day, makeOnDoubleClickHour}}/>
 

@@ -10,8 +10,27 @@
   padding: 1em;
 }
 
+.spin-logo {
+  animation: spin-trans infinite 2s linear;
+}
+
+
+@keyframes spin-trans {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+
+
+
+/* useless: */
 .App-logo {
-  animation: App-logo-spin infinite 20s linear;
+  animation: spin-trans infinite 20s linear;
   height: 40vmin;
 }
 
@@ -28,13 +47,4 @@
 
 .App-link {
   color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }

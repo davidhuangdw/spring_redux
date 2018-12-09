@@ -9,4 +9,4 @@ export const MyTheme = createMuiTheme({
 });
 
 export const HOUR_HEIGHT = 6.0;  // em for 1 hour
-export const MENU_BAR_HEIGHT = "7.0em";  // em
+export const MENU_BAR_HEIGHT = "6.0em";  // em

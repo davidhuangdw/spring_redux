@@ -11,21 +11,40 @@ const ACTIVITY_POST_SUCC = "ACTIVITY_POST_SUCC";
 const ACTIVITY_PATCH_SUCC = "ACTIVITY_PATCH_SUCC";
 const ACTIVITY_DELETE_SUCC = "ACTIVITY_DELETE_SUCC";
 const ACTIVITY_FOCUSED = "ACTIVITY_FOCUSED";
-const ACITIVITES_CHANGE_DAY = "ACITIVITES_CHANGE_DAY";
+const ACITIVITES_SET_DAY = "ACITIVITES_SET_DAY";
+const ACITIVITES_CACHED_DAY = "ACITIVITES_CACHED_DAY";
 
 
 // actions:
 export const doFocusActivity = focusedActivityId => ({type: ACTIVITY_FOCUSED, focusedActivityId});
-export const doChangeDay = newDay => ({type: ACITIVITES_CHANGE_DAY, newDay});
+export const doSetDay = newDay => ({type: ACITIVITES_SET_DAY, newDay});
+export const doChangeDay = newDay => dispatch => {
+  dispatch(doSetDay(newDay));
+  dispatch(doActivityFetchAll());
+};
+export const doCacheDay = (cacheDay, removeCache) => ({type: ACITIVITES_CACHED_DAY, cacheDay, removeCache});
+export const doRefreshActivities = () => (dispatch, getState) => {
+  let day = getDay(getState());
+  dispatch(doCacheDay(day, true));
+  dispatch(doActivityFetchAll());
+};
 
 export const doActivityFetchAllPending = () =>({type: ACTIVITIES_API_PENDING, apiType: 'fetchAll'});
 export const doActivityFetchAllFail = error => ({type: ACTIVITIES_API_FAIL, apiType: 'fetchAll', error: error });
 export const doActivityFetchAllSucc = activities => ({type: ACTIVITIES_FETCH_SUCC, activities});
-export const doActivityFetchAll = () => dispatch => {
+export const doActivityFetchAll = () => (dispatch, getState) => {
+  let day = getDay(getState());
+  let cachedDays= getCachedDays(getState());
+  if(cachedDays[day.toJSON()]) return;
+
+  let nextDay = day.clone().add(1, 'day');
   dispatch(doActivityFetchAllPending());
-  return axios.get("/activities")
+  return axios.get(`/activities/search/findByToAfterAndFromBefore?toAfter=${day.toJSON()}&fromBefore=${nextDay.toJSON()}`)
     .then(
-      payload => dispatch(doActivityFetchAllSucc(payload.data._embedded.activities)),
+      payload => {
+        dispatch(doActivityFetchAllSucc(payload.data._embedded.activities));
+        dispatch(doCacheDay(day));
+      },
       error => dispatch(doActivityFetchAllFail(error.message))
     )
 };
@@ -80,20 +99,23 @@ const initialState = {
   post:{},
   patch:{},
   deleteStatus:{},
+  cachedDays: {}
 };
 
 
 // selectors:
 const getActivitiesState = states => states.activitiesState;
 const getActivitiesModel = createSelector(getActivitiesState, state => state.model);
+export const getCachedDays = createSelector(getActivitiesState, state => state.cachedDays);
 export const getFetchAll = createSelector(getActivitiesState, state => state.fetchAll);
 export const getPost = createSelector(getActivitiesState, state => state.post);
 export const getPatch = createSelector(getActivitiesState, state => state.patch);
 export const getDelete = createSelector(getActivitiesState, state => state.deleteStatus);
 export const getDay = createSelector(getActivitiesState, state => state.day);
 export const getFocusedActivityId = createSelector(getActivitiesState, state => state.focusedActivityId);
-
 export const getFocusedActivity = createSelector(getActivitiesModel, getFocusedActivityId, (model,id) => id && model[id]);
+
+export const getPendings = createSelector(getFetchAll, getPost, getPatch, getDelete, (...statues)=>statues.map(s => s.pending));
 
 export const getActivitiesArray = createSelector(getActivitiesModel, model => Object.keys(model).map(k => model[k]));
 export const getDayActivitiesArray = createSelector(getActivitiesArray, getDay, (list, day) => {
@@ -102,14 +124,19 @@ export const getDayActivitiesArray = createSelector(getActivitiesArray, getDay, 
 });
 
 
+
 // reducer
 export default function reducer(state=initialState, action){
-  let {model, fetchAll, post, patch, deleteStatus} = state;
-  let {type, apiType, error, activities, activity, deleteId, focusedActivityId, newDay} = action;
+  let {model, fetchAll, post, patch, deleteStatus, cachedDays} = state;
+  let {type, apiType, error, activities, activity, deleteId, focusedActivityId, newDay, cacheDay, removeCache} = action;
   let apiStatus;
 
   switch (type) {
-    case ACITIVITES_CHANGE_DAY:
+    case ACITIVITES_CACHED_DAY:
+      cachedDays = {...cachedDays, [cacheDay.toJSON()]: !removeCache};
+      return {...state, cachedDays};
+
+    case ACITIVITES_SET_DAY:
       return {...state, day: Moment(newDay).startOf('day'),focusedActivityId: undefined};
 
     case ACTIVITY_FOCUSED:
