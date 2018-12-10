@@ -1,7 +1,7 @@
 import React from "react"
 import {AppBar, Toolbar, IconButton, } from "@material-ui/core"
 import {Menu} from "@material-ui/icons"
-import Day from "../activities/Day";
+import Day from "./Day";
 import ActivitiesApiPending from "../activities/ActivitiesApiPending";
 
 export default function MyAppBar(props){

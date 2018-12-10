@@ -2,10 +2,10 @@ import React, {Component} from  "react"
 import {connect} from "react-redux"
 import Grid from '@material-ui/core/Grid';
 import {
-  getDay, getFetchAll, getPost, getPatch,
-  getDayActivitiesArray, getFocusedActivityId,
+  getFetchAll, getPost, getPatch,
+  getDayActivitiesArray,
   doActivityFetchAll, doActivityPost,
-  doActivityPatch, doFocusActivity, getFocusedActivity, getDelete, doActivityDelete, doChangeDay,
+  doActivityPatch, getFocusedActivity, getDelete, doActivityDelete, doChangeDay,
 } from "../activities/duck"
 import HourTexts from "./HourTexts";
 import HourLines from "./HourLines";
@@ -16,6 +16,7 @@ import NewActivity from "./NewActivity";
 import EditActivity from "./EditActivity";
 import ConfirmDeleteActivity from "./ConfirmDeleteActivity";
 import DayControl from "./DayControl";
+import {doFocusActivity, getDay, getFocusedActivityId} from "../view/duck";
 
 
 class ActivitiesPage extends Component{

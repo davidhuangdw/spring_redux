@@ -1,6 +1,6 @@
 import React from 'react';
 import {dayFormat} from "../utils";
-import ErrorMessages from "../components/ErrorMessages";
+import ErrorMessages from "../common/ErrorMessages";
 import {TextField, Button, FormControlLabel, Checkbox} from "@material-ui/core"
 
 const buttonStyle = {margin: "0.5em"};

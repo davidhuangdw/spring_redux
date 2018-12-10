@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
-import {doRefreshActivities, getPendings} from "./duck";
-import SpinRefreshButton from "../components/SpinRefreshButton";
+import {doRefreshActivities, getActivityApiPendings} from "./duck";
+import SpinRefreshButton from "../common/SpinRefreshButton";
 
 class ActivitiesApiPending extends Component {
   render() {
@@ -13,6 +13,6 @@ class ActivitiesApiPending extends Component {
 }
 
 export default connect(
-  state => ({ pendings: getPendings(state) }),
+  state => ({ pendings: getActivityApiPendings(state) }),
   dispatch => ({ refresh: () => dispatch(doRefreshActivities()) })
 )(ActivitiesApiPending);

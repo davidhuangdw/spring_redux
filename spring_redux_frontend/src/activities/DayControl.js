@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import {connect} from "react-redux"
 import {Button, IconButton} from "@material-ui/core"
 import {SkipNext, SkipPrevious} from "@material-ui/icons"
-import {doChangeDay, getDay} from "./duck";
+import {doChangeDay} from "./duck";
+import {getDay} from "../view/duck";
 
 const style = {margin: "0"};
 

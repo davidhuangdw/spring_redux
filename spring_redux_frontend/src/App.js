@@ -7,7 +7,7 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 import store from "./store"
 import './App.css';
 import {MyTheme} from './constants'
-import {MyAppBar} from "./components"
+import MyAppBar from "./view/MyAppBar"
 import ActivitiesPage from "./activities/ActivitiesPage"
 
 
@@ -19,7 +19,7 @@ class App extends Component {
         <MuiThemeProvider theme={MyTheme}>
           <div className="App">
 
-            <MyAppBar title="My App"/>
+            <MyAppBar/>
             <ActivitiesPage/>
 
           </div>
