@@ -22,7 +22,7 @@ export const doChangeDay = newDay => dispatch => {
 export const doCacheDay = (cacheDay, removeCache) => ({type: ACITIVITES_CACHED_DAY, cacheDay, removeCache});
 export const doRefreshActivities = () => (dispatch, getState) => {
   let day = getDay(getState());
-  dispatch(doCacheDay(day, true));
+  dispatch(doCacheDay(day, true));  //remove cache
   dispatch(doActivityFetchAll());
 };
 
@@ -101,13 +101,14 @@ const initialState = {
 const getActivitiesState = states => states.activitiesState;
 const getActivitiesModel = createSelector(getActivitiesState, state => state.model);
 export const getCachedDays = createSelector(getActivitiesState, state => state.cachedDays);
-export const getFetchAll = createSelector(getActivitiesState, state => state.fetchAll);
-export const getPost = createSelector(getActivitiesState, state => state.post);
-export const getPatch = createSelector(getActivitiesState, state => state.patch);
-export const getDelete = createSelector(getActivitiesState, state => state.deleteStatus);
+export const getActivityFetchAll = createSelector(getActivitiesState, state => state.fetchAll);
+export const getActivityPost = createSelector(getActivitiesState, state => state.post);
+export const getActivityPatch = createSelector(getActivitiesState, state => state.patch);
+export const getActivityDelete = createSelector(getActivitiesState, state => state.deleteStatus);
 export const getFocusedActivity = createSelector(getActivitiesModel, getFocusedActivityId, (model,id) => id && model[id]);
 
-export const getActivityApiPendings = createSelector(getFetchAll, getPost, getPatch, getDelete, (...statues)=>statues.map(s => s.pending));
+export const getActivityApiPendings = createSelector(getActivityFetchAll, getActivityPost, getActivityPatch, getActivityDelete,
+  (...statues)=>statues.map(s => s.pending));
 
 export const getActivitiesArray = createSelector(getActivitiesModel, model => Object.keys(model).map(k => model[k]));
 export const getDayActivitiesArray = createSelector(getActivitiesArray, getDay, (list, day) => {
@@ -163,5 +164,4 @@ export default function reducer(state=initialState, action){
     default:
       return state
   }
-
 }

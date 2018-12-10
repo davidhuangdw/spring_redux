@@ -2,14 +2,17 @@ import React from "react"
 import {connect} from "react-redux"
 import {getDay} from "./duck";
 import {dayFormat} from "../utils";
+import LargeText from "../common/LargeText";
 
-const style={fontSize: "2em"};
+const style = {
+  display: "flex"
+};
 
 function Day({day}){
-  return (<div className="activities-day" >
-    <span style={style} >
+  return (<div style={style} >
+    <LargeText>
       { dayFormat(day) }
-      </span>
+    </LargeText>
     <p>
       {day.format('dddd')}
     </p>
@@ -17,4 +20,3 @@ function Day({day}){
 }
 
 export default connect(state => ({day: getDay(state)}))(Day);
-

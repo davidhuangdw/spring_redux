@@ -4,16 +4,13 @@
   font-size: 0.9em;
 }
 
-.activities-day{
-  text-align: left;
-  display: flex;
-  padding: 1em;
+.content {
+  margin: 6.5em 0.5em 0.5em;
 }
 
 .spin-logo {
   animation: spin-trans infinite 2s linear;
 }
-
 
 @keyframes spin-trans {
   from {

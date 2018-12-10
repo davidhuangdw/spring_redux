@@ -1,23 +1,27 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux"
-import {Button, IconButton} from "@material-ui/core"
-import {SkipNext, SkipPrevious} from "@material-ui/icons"
+import {IconButton} from "@material-ui/core"
+import {NavigateBefore, NavigateNext, NearMe} from "@material-ui/icons"
 import {doChangeDay} from "./duck";
 import {getDay} from "../view/duck";
-
-const style = {margin: "0"};
+import {today} from "../utils";
 
 class DayControl extends Component {
   addDays = k => {
     let {doChangeDay,day} = this.props;
     doChangeDay(day.clone().add(k, 'days'));
   };
+  goToday = ()=>{
+    this.props.doChangeDay(today());
+  };
 
   render() {
+    let {addDays, goToday} = this;
     return (
       <div>
-        <IconButton variant="contained" color="default" style={style} onClick={() => this.addDays(-1)}> <SkipPrevious/> </IconButton>
-        <IconButton variant="contained" color="default" style={style} onClick={() => this.addDays(1)}> <SkipNext/> </IconButton>
+        <IconButton variant="contained" color="inherit" onClick={() => addDays(-1)}> <NavigateBefore/> </IconButton>
+        <IconButton variant="contained" color="inherit" onClick={() => addDays(1)}> <NavigateNext/> </IconButton>
+        <IconButton variant="contained" color="inherit" onClick={goToday}> <NearMe/> </IconButton>
       </div>
     );
   }

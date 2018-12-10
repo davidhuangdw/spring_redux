@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {hourDuration, hourTimeFormat, maxMoment, minMoment} from "../utils";
-import {HOUR_HEIGHT} from "../constants";
+import {DEFAULT_ACTIVITY_COLOR, HOUR_HEIGHT} from "../constants";
 
 const margin = 0.1;
 
@@ -16,19 +16,20 @@ class Activity extends Component {
     if(height < 1.2) height = 1.2; // enough room for text..
 
     let opacity = focused ? 0.95 : 0.75;
+    let backgroundColor = DEFAULT_ACTIVITY_COLOR;
 
     let style = {
       top: `${offset}em`,
       height: `${height}em`,
       margin: `${margin}em 0`,
       opacity,
+      backgroundColor,
 
       color: "white",
       textAlign: "left",
 
       width: "99%",
       left: "0.5%",
-      backgroundColor: "#2196F3",
       position: "absolute",
     };
     return (

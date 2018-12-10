@@ -2,21 +2,22 @@ import React, {Component} from  "react"
 import {connect} from "react-redux"
 import Grid from '@material-ui/core/Grid';
 import {
-  getFetchAll, getPost, getPatch,
-  getDayActivitiesArray,
-  doActivityFetchAll, doActivityPost,
-  doActivityPatch, getFocusedActivity, getDelete, doActivityDelete, doChangeDay,
+  getActivityFetchAll, getActivityPost, getActivityPatch, getActivityDelete,
+  getDayActivitiesArray, getFocusedActivity,
+  doActivityFetchAll, doActivityPost, doActivityPatch, doActivityDelete, doChangeDay,
 } from "../activities/duck"
 import HourTexts from "./HourTexts";
 import HourLines from "./HourLines";
 import Activity from "./Activity";
-import {MENU_BAR_HEIGHT} from "../constants";
 import {debug, findNext, findPrev, hourDuration} from "../utils";
 import NewActivity from "./NewActivity";
 import EditActivity from "./EditActivity";
 import ConfirmDeleteActivity from "./ConfirmDeleteActivity";
 import DayControl from "./DayControl";
 import {doFocusActivity, getDay, getFocusedActivityId} from "../view/duck";
+import MyAppBar from "../view/MyAppBar";
+import ActivitiesApiPending from "./ActivitiesApiStatus";
+import Day from "../view/Day";
 
 
 class ActivitiesPage extends Component{
@@ -73,11 +74,18 @@ class ActivitiesPage extends Component{
       doFocusActivity, doUnfocusActivity} = this.props;
     let {makeOnDoubleClickHour} = this;
 
-    return (<div style={{margin: "0.5em", marginTop: MENU_BAR_HEIGHT}}>
-      <Grid container >
+    return (<div>
+      <MyAppBar>
+        <DayControl/>
+        <Day />
+        <ActivitiesApiPending />
+      </MyAppBar>
+
+
+      <Grid container className="content">
 
         <Grid container item xs={8} onClick={()=> focusedActivityId && doUnfocusActivity()}>
-          <Grid item container xs={12} style={{margin: "0.5em 0"}}> <DayControl/> </Grid>
+          {/*<Grid item container xs={12} style={{margin: "0.5em 0"}}></Grid>*/}
 
           <HourTexts {...{xsWidth: 1, day, makeOnDoubleClickHour}}/>
 
@@ -114,10 +122,10 @@ class ActivitiesPage extends Component{
 export default connect(
   state => ({
     day: getDay(state),
-    fetchAll: getFetchAll(state),
-    postStatus: getPost(state),
-    patchStatus: getPatch(state),
-    deleteStatus: getDelete(state),
+    fetchAll: getActivityFetchAll(state),
+    postStatus: getActivityPost(state),
+    patchStatus: getActivityPatch(state),
+    deleteStatus: getActivityDelete(state),
 
     activities: getDayActivitiesArray(state),
     focusedActivityId: getFocusedActivityId(state),

@@ -1,14 +1,15 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {hot} from "react-hot-loader"
 import {MuiThemeProvider} from "@material-ui/core"
 import {Provider} from "react-redux"
 import CssBaseline from '@material-ui/core/CssBaseline'
+import {BrowserRouter as Router, Route} from "react-router-dom"
 
 import store from "./store"
 import './App.css';
-import {MyTheme} from './constants'
-import MyAppBar from "./view/MyAppBar"
-import ActivitiesPage from "./activities/ActivitiesPage"
+import {MyTheme, PATH_ACTIVITIES, PATH_CATEGORIES} from './constants'
+import CategoriesPage from "./categories/CategoriesPage";
+import ActivitiesPage from "./activities/ActivitiesPage";
 
 
 class App extends Component {
@@ -17,12 +18,15 @@ class App extends Component {
       <Provider store={store}>
         <CssBaseline />
         <MuiThemeProvider theme={MyTheme}>
-          <div className="App">
+          <Router>
+            <div className="App">
 
-            <MyAppBar/>
-            <ActivitiesPage/>
+              <Route exact path="/" component={ActivitiesPage} />
+              <Route exact path={PATH_ACTIVITIES} component={ActivitiesPage} />
+              <Route exact path={PATH_CATEGORIES} component={CategoriesPage} />
 
-          </div>
+            </div>
+          </Router>
         </MuiThemeProvider>
       </Provider>
     );

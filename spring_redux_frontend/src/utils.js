@@ -21,6 +21,7 @@ export const debug = func =>{
     return value;
   }
 };
+export const toSelf = v => v;
 
 export const idModelFromList = (list, {model={}, tempId=10000}) => {
   let byId = {}, newTempId=tempId;
