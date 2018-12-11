@@ -1,6 +1,6 @@
 import {createSelector} from 'reselect'
 import axios from "axios"
-import {debug, idModelFromList, Moment} from '../utils'
+import {idModelFromList, Moment} from '../utils'
 import {doSetDay, getDay, getFocusedActivityId} from "../view/duck";
 
 

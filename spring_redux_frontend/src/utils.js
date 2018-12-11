@@ -29,6 +29,18 @@ export const listToIndexHash = (list, getKey) => {
   return ret;
 };
 export const shallowEqual = (a,b) => a===b || !!(a && b && !(Object.keys(a).find(k => a[k] !== b[k]) || Object.keys(b).find(k => a[k] !== b[k])));
+export const strOrderMatch = (pattern, target) => {
+  let i,j;
+  let matchIndex = {};
+  for(i=j=0; i<pattern.length && j<target.length; j++) {
+    if (pattern[i] === target[j]){
+      i++;
+      matchIndex[j] = true;
+    }
+  }
+
+  return i === pattern.length ? matchIndex : null;
+};
 
 export const idModelFromList = (list, {model={}, tempId=10000}) => {
   let byId = {}, newTempId=tempId;

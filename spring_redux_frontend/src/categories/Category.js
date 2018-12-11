@@ -32,7 +32,7 @@ class Category extends Component {
   };
 
   findErrors = ()=>{
-    let {name, description, color} = this.state;
+    let {name, color} = this.state;
     let {conflictName, category} = this.props;
     let err = {};
     if(!color) err.color = "Color is required";

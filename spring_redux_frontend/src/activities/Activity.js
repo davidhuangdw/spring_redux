@@ -16,13 +16,15 @@ class Activity extends Component {
     let height = hourDuration(maxMoment(from, day), minMoment(to, day.clone().add(1, 'day'))) * HOUR_HEIGHT - margin * 2;
     if(height < 1.2) height = 1.2; // enough room for text..
 
-    let opacity = focused ? 1 : 0.85;
+    let opacity = focused ? 0.95 : 0.85;
+    let fontWeight = focused ? "bold" : "normal";
     let backgroundColor = this.color();
 
     let style = {
       top: `${offset}em`,
       height: `${height}em`,
       margin: `${margin}em 0`,
+      fontWeight,
       opacity,
       backgroundColor,
 

@@ -1,11 +1,30 @@
 import React, {Component} from 'react';
 import SkyLight from "react-skylight";
 import {Button} from "@material-ui/core"
-import {dayFormat, debug, hourTimeFormat} from "../utils";
+import {dayFormat, hourTimeFormat} from "../utils";
 import ErrorMessages from "../common/ErrorMessages";
 
 class ConfirmDeleteActivity extends Component {
   state = {};
+
+  componentDidMount(){
+    document.addEventListener('keyup', this.onKeyUp)
+  }
+
+  componentWillUnmount(){
+    document.removeEventListener('keyup', this.onKeyUp)
+  }
+
+  onKeyUp = e => {
+    if (!this.visible() || this.isPending()) return;
+    switch (e.code){
+      case "Enter":
+      case "Backspace":
+        this.deleteActivity();
+        break;
+      default:
+    }
+  };
 
   visible = () => this.dialog.state.isVisible;
 

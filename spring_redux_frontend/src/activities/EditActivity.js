@@ -30,9 +30,10 @@ class EditActivity extends Component {
     this.dialog.show();
   };
 
-  changeText = e => {
-    this.setState({[e.target.name]: e.target.value})
+  changeActivity = (k, v) =>{
+    this.setState({[k]:v})
   };
+
   toggleCrossDay = e => this.setState(prev => ({crossDay: !prev.crossDay}));
 
   patchActivity = e => {
@@ -53,7 +54,7 @@ class EditActivity extends Component {
   render() {
     let {beginHour, endHour, crossDay, description, category} = this.state;
     let day = this.getDay();
-    let {changeText, toggleCrossDay, patchActivity} = this;
+    let {changeActivity, toggleCrossDay, patchActivity} = this;
 
     let inputErrors = validateActivityRequestBody({beginHour, endHour, crossDay, description, category});
     let pending = this.isPending();
@@ -64,7 +65,8 @@ class EditActivity extends Component {
       <SkyLight hideOnOverlayClicked ref={ref => this.dialog = ref} title="Edit Activity" >
         {this.activity && <ActivityForm {...{
           day, beginHour, endHour, crossDay, description, category, inputErrors,
-            pending, requestError, changeText, toggleCrossDay, disableSave, onSave: patchActivity
+          requestError, changeActivity, toggleCrossDay, disableSave,
+          onSave: patchActivity
         }}/>}
       </SkyLight>
     );

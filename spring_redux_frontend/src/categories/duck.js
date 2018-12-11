@@ -84,6 +84,7 @@ export const getCategoryDelete = createSelector(getCategoriesState, state => sta
 export const getCategoriesArray = createSelector(getCategoryModel, model =>
   Object.keys(model).map(k => model[k]).sort((a,b) => a.name.localeCompare(b.name)));
 export const getCategoriesByName = createSelector(getCategoriesArray, list => listToIndexHash(list, c => c.name));
+export const getCategoriesNames = createSelector(getCategoriesArray, list => list.map(c => c.name));
 
 const getCached = createSelector(getCategoriesState, s => s.cached);
 export const getCategoryApiPendings = createSelector(getCategoryFetchAll, getCategoryPost, getCategoryPatch, getCategoryDelete,

@@ -9,7 +9,7 @@ import {
 import HourTexts from "./HourTexts";
 import HourLines from "./HourLines";
 import Activity from "./Activity";
-import {debug, findNext, findPrev, hourDuration} from "../utils";
+import {findNext, findPrev, hourDuration} from "../utils";
 import NewActivity from "./NewActivity";
 import EditActivity from "./EditActivity";
 import ConfirmDeleteActivity from "./ConfirmDeleteActivity";
@@ -56,6 +56,7 @@ class ActivitiesPage extends Component{
       case "ArrowRight":
         this.addDays(1);
         break;
+      default:
     }
   };
 
@@ -87,8 +88,6 @@ class ActivitiesPage extends Component{
       <Grid container className="content">
 
         <Grid container item xs={8} onClick={()=> focusedActivityId && doUnfocusActivity()}>
-          {/*<Grid item container xs={12} style={{margin: "0.5em 0"}}></Grid>*/}
-
           <HourTexts {...{xsWidth: 1, day, makeOnDoubleClickHour}}/>
 
           <Grid container item xs={11} style={{position: "relative"}}>
