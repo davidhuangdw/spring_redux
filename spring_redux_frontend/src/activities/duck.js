@@ -19,10 +19,11 @@ export const doChangeDay = newDay => dispatch => {
   dispatch(doSetDay(newDay));
   dispatch(doActivityFetchAll());
 };
-export const doCacheDay = (cacheDay, removeCache) => ({type: ACITIVITES_CACHED_DAY, cacheDay, removeCache});
+export const doCacheDay = cacheDay => ({type: ACITIVITES_CACHED_DAY, cacheDay});
+export const doRemoveCache = cacheDay => ({type: ACITIVITES_CACHED_DAY, cacheDay, removeCache: true});
 export const doRefreshActivities = () => (dispatch, getState) => {
   let day = getDay(getState());
-  dispatch(doCacheDay(day, true));  //remove cache
+  dispatch(doRemoveCache(day));  //remove cache
   dispatch(doActivityFetchAll());
 };
 

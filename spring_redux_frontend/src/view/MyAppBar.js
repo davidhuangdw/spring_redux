@@ -11,13 +11,17 @@ class MyAppBar extends Component {
   render() {
     return (
       <AppBar position="fixed" color="primary">
-        <Toolbar>
-          <IconButton color="inherit" component={NavLink} to={PATH_INDEX} > <WatchLater/>  </IconButton>
-          <IconButton color="inherit" component={NavLink} to={PATH_CATEGORIES} > <Inbox/> </IconButton>
+        <Toolbar className="flex-spacing-container">
 
-          {/*<IconButton color="inherit" aria-label="Menu"> <Menu color="inherit"/> </IconButton>*/}
+          <div className="flex">
+            {/*<IconButton color="inherit" aria-label="Menu"> <Menu color="inherit"/> </IconButton>*/}
+            {this.props.children}
+          </div>
 
-          {this.props.children}
+          <div>
+            <IconButton color="inherit" component={NavLink} to={PATH_INDEX} > <WatchLater/>  </IconButton>
+            <IconButton color="inherit" component={NavLink} to={PATH_CATEGORIES} > <Inbox/> </IconButton>
+          </div>
         </Toolbar>
       </AppBar>
     );

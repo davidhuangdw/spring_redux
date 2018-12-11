@@ -4,9 +4,10 @@ const style = {color:"red"};
 
 const ErrorMessages = ({errors}) => {
   if(!errors) errors = [];
+  errors = [].concat(errors).map(e=>e);
   return (
     <div>
-      {errors.filter(e => e).map(err =>
+      {errors.map(err =>
         <div key={err} style={style}> {err} </div>
       )}
     </div>

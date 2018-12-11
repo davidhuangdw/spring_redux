@@ -8,6 +8,20 @@
   margin: 6.5em 0.5em 0.5em;
 }
 
+.flex{
+  display: flex;
+}
+
+.flex-spacing-container{
+  display: flex;
+  justify-content: space-between;
+  /*align-items: center;*/
+}
+.flex-align-start{
+  display: flex;
+  align-items: start;
+}
+
 .spin-logo {
   animation: spin-trans infinite 2s linear;
 }

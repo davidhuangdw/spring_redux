@@ -21,7 +21,14 @@ export const debug = func =>{
     return value;
   }
 };
+
 export const toSelf = v => v;
+export const listToIndexHash = (list, getKey) => {
+  let ret = {};
+  for(let v of list) ret[getKey(v)] = v;
+  return ret;
+};
+export const shallowEqual = (a,b) => a===b || !!(a && b && !(Object.keys(a).find(k => a[k] !== b[k]) || Object.keys(b).find(k => a[k] !== b[k])));
 
 export const idModelFromList = (list, {model={}, tempId=10000}) => {
   let byId = {}, newTempId=tempId;

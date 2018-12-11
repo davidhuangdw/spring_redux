@@ -18,11 +18,13 @@ import {doFocusActivity, getDay, getFocusedActivityId} from "../view/duck";
 import MyAppBar from "../view/MyAppBar";
 import ActivitiesApiPending from "./ActivitiesApiStatus";
 import Day from "../view/Day";
+import {doCategoriesFetchAll, getCategoriesByName} from "../categories/duck";
 
 
 class ActivitiesPage extends Component{
   componentDidMount(){
     this.props.doFetchAll();
+    this.props.doFetchAllCategories();
     document.addEventListener('keyup', this.onKeyUp)
   }
 
@@ -69,7 +71,7 @@ class ActivitiesPage extends Component{
   makeOnClickActivity = activity => e => { e.stopPropagation(); this.props.doFocusActivity(activity.id); };
 
   render(){
-    const {activities, day, postStatus, patchStatus, deleteStatus, focusedActivityId,
+    const {activities, day, postStatus, patchStatus, deleteStatus, focusedActivityId, categoriesByName,
       doCreateActivity, doPatchActivity, doDeleteActivity,
       doFocusActivity, doUnfocusActivity} = this.props;
     let {makeOnDoubleClickHour} = this;
@@ -92,9 +94,10 @@ class ActivitiesPage extends Component{
           <Grid container item xs={11} style={{position: "relative"}}>
             <HourLines {...{day, makeOnDoubleClickHour}}/>
             {activities.map(activity =>
-              <Activity key={activity.id} focused={activity.id === focusedActivityId}
-                        onClick={this.makeOnClickActivity(activity)}
-                        onDoubleClick={this.makeOnDoubleClickActivity(activity)}
+              <Activity key={activity.id} focused={ activity.id === focusedActivityId }
+                        categoryObject={ categoriesByName[activity.category] }
+                        onClick={ this.makeOnClickActivity(activity) }
+                        onDoubleClick={ this.makeOnDoubleClickActivity(activity) }
                         {...{activity, day, doFocusActivity}}
               />
             )}
@@ -130,6 +133,7 @@ export default connect(
     activities: getDayActivitiesArray(state),
     focusedActivityId: getFocusedActivityId(state),
     focusedActivity: getFocusedActivity(state),
+    categoriesByName: getCategoriesByName(state)
   }),
   dispatch => ({
     doFetchAll: () => dispatch(doActivityFetchAll()),
@@ -139,5 +143,6 @@ export default connect(
     doFocusActivity: activityId => dispatch(doFocusActivity(activityId)),
     doUnfocusActivity: () => dispatch(doFocusActivity()),
     doChangeDay: newDay => dispatch(doChangeDay(newDay)),
+    doFetchAllCategories: () => dispatch(doCategoriesFetchAll()),
   })
 )(ActivitiesPage)

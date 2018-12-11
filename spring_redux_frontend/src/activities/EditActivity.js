@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {
   buildActivityPayload,
-  debug,
   hourTimeFormat,
   isSameDay,
   startOfDay,
@@ -45,9 +44,7 @@ class EditActivity extends Component {
 
   noValueChanged = () =>{
     let activity = parseActivityModel(this.activity);
-    for(let k of ['beginHour', 'endHour', 'crossDay', 'description', 'category'])
-      if(activity[k] !== this.state[k]) return false;
-    return true;
+    return !['beginHour', 'endHour', 'crossDay', 'description', 'category'].find(k => activity[k] !== this.state[k]);
   };
 
   isPending = () => this.state.requested && this.props.patchStatus.pending;

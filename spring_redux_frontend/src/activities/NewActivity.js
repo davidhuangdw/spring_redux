@@ -14,7 +14,7 @@ class NewActivity extends Component {
     let crossDay = !isSameDay(beginHour, endHour);
     beginHour = hourTimeFormat(beginHour);
     endHour = hourTimeFormat(endHour);
-    this.setState({beginHour, endHour, crossDay, requested: false});
+    this.setState({beginHour, endHour, crossDay, requested: false, description: ""});
     this.dialog.show();
   };
 

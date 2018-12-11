@@ -12,7 +12,7 @@ const ActivityForm = ({day, beginHour, endHour, crossDay, description, category,
       { dayFormat(day) }
 
       <form>
-        <TextField name="beginHour" label="Begin"
+        <TextField name="beginHour" label="Begin" autoComplete="off"
                    value={beginHour} onChange={changeText}/> <br/>
         <TextField name="endHour" label="End"
                    value={endHour} onChange={changeText}/>
@@ -29,9 +29,9 @@ const ActivityForm = ({day, beginHour, endHour, crossDay, description, category,
           label="Cross Day"
         />
         <br/>
-        <TextField name="description" label="Description" multiline
+        <TextField name="description" label="Description" autoComplete="off" multiline
                    value={description} onChange={changeText}/> <br/>
-        <TextField name="category" label="Category"
+        <TextField name="category" label="Category" autoComplete="off"
                    value={category} onChange={changeText}/> <br/>
       </form>
 

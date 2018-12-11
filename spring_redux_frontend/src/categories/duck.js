@@ -1,6 +1,6 @@
 import {createSelector} from 'reselect'
 import axios from "axios"
-import {idModelFromList} from "../utils";
+import {idModelFromList, listToIndexHash} from "../utils";
 
 // action types:
 const CATEGORIES_API_FAIL = "CATEGORIES_API_FAIL";
@@ -13,9 +13,10 @@ const CATEGORIES_CACHED = "CATEGORIES_CACHED"
 
 
 // action creators:
-const doCache = removeCache => ({type: CATEGORIES_CACHED, removeCache});
+const doCache = () => ({type: CATEGORIES_CACHED});
+const removeCache = () => ({type: CATEGORIES_CACHED, removeCache: true});
 export const doRefreshCategories = () => dispatch => {
-  dispatch(doCache(true));
+  dispatch(removeCache());
   dispatch(doCategoriesFetchAll())
 };
 
@@ -80,7 +81,9 @@ export const getCategoryFetchAll = createSelector(getCategoriesState, state => s
 export const getCategoryPost = createSelector(getCategoriesState, state => state.post);
 export const getCategoryPatch = createSelector(getCategoriesState, state => state.patch);
 export const getCategoryDelete = createSelector(getCategoriesState, state => state.deleteStatus);
-export const getCategoriesArray = createSelector(getCategoryModel, model => Object.keys(model).map(k => model[k]));
+export const getCategoriesArray = createSelector(getCategoryModel, model =>
+  Object.keys(model).map(k => model[k]).sort((a,b) => a.name.localeCompare(b.name)));
+export const getCategoriesByName = createSelector(getCategoriesArray, list => listToIndexHash(list, c => c.name));
 
 const getCached = createSelector(getCategoriesState, s => s.cached);
 export const getCategoryApiPendings = createSelector(getCategoryFetchAll, getCategoryPost, getCategoryPatch, getCategoryDelete,
