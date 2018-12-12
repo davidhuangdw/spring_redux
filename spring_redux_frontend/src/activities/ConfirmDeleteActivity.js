@@ -8,14 +8,14 @@ class ConfirmDeleteActivity extends Component {
   state = {};
 
   componentDidMount(){
-    document.addEventListener('keyup', this.onKeyUp)
+    document.addEventListener('keydown', this.onKeyDown)
   }
 
   componentWillUnmount(){
-    document.removeEventListener('keyup', this.onKeyUp)
+    document.removeEventListener('keydown', this.onKeyDown)
   }
 
-  onKeyUp = e => {
+  onKeyDown = e => {
     if (!this.visible() || this.isPending()) return;
     switch (e.code){
       case "Enter":

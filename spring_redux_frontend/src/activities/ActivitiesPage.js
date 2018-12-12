@@ -19,6 +19,7 @@ import MyAppBar from "../view/MyAppBar";
 import ActivitiesApiPending from "./ActivitiesApiStatus";
 import Day from "../view/Day";
 import {doCategoriesFetchAll, getCategoriesByName} from "../categories/duck";
+import DayHours from "./DayHours";
 
 
 class ActivitiesPage extends Component{
@@ -104,9 +105,7 @@ class ActivitiesPage extends Component{
         </Grid>
 
         <Grid container item xs={4}>
-          <p>
-            Right side for editor and statics:
-          </p>
+          <DayHours/>
         </Grid>
 
       </Grid>

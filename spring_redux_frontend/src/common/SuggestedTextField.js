@@ -2,7 +2,10 @@ import React, {Component} from 'react';
 import {strOrderMatch} from "../utils";
 import {TextField} from "@material-ui/core";
 
-const suggestStyle = {color: "#9068be" };
+const suggestStyle = {
+  color: "#9068be",
+  minHeight: "2em",
+};
 
 class SuggestedTextField extends Component {
   state = {focused: false};

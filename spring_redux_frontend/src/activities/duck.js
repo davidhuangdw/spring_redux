@@ -1,6 +1,6 @@
 import {createSelector} from 'reselect'
 import axios from "axios"
-import {idModelFromList, Moment} from '../utils'
+import {hourDuration, idModelFromList, maxMoment, minMoment, Moment} from '../utils'
 import {doSetDay, getDay, getFocusedActivityId} from "../view/duck";
 
 
@@ -115,6 +115,15 @@ export const getActivitiesArray = createSelector(getActivitiesModel, model => Ob
 export const getDayActivitiesArray = createSelector(getActivitiesArray, getDay, (list, day) => {
   let nextDay = day.clone().add(1, 'day');
   return list.filter(({from,to}) => day < Moment(to) && Moment(from) < nextDay);
+});
+export const getDayCategoryHours = createSelector(getDayActivitiesArray, getDay, (list, day) => {
+  let byCat = {}, nextDay = day.clone().add(1, 'day');
+  for(let activity of list){
+    if(!activity.category) continue;
+    let dur = hourDuration(maxMoment(activity.from, day), minMoment(activity.to, nextDay));
+    byCat[activity.category] = (byCat[activity.category] || 0) + dur;
+  }
+  return byCat;
 });
 
 
