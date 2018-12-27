@@ -4,12 +4,12 @@ import Grid from '@material-ui/core/Grid';
 import {
   getActivityFetchAll, getActivityPost, getActivityPatch, getActivityDelete,
   getDayActivitiesArray, getFocusedActivity,
-  doActivityFetchAll, doActivityPost, doActivityPatch, doActivityDelete, doChangeDay,
+  doActivityFetchAll, doActivityPost, doActivityPatch, doActivityDelete, doChangeDay, getActivity,
 } from "../activities/duck"
 import HourTexts from "./HourTexts";
 import HourLines from "./HourLines";
 import Activity from "./Activity";
-import {findNext, findPrev, hourDuration} from "../utils";
+import {findNext, findPrev, hourDuration, Moment} from "../utils";
 import NewActivity from "./NewActivity";
 import EditActivity from "./EditActivity";
 import ConfirmDeleteActivity from "./ConfirmDeleteActivity";
@@ -21,35 +21,50 @@ import Day from "../view/Day";
 import {doCategoriesFetchAll, getCategoriesByName} from "../categories/duck";
 import DayHours from "./DayHours";
 
+const MOVE_ACTIVITY_HOURS = 0.25;
 
 class ActivitiesPage extends Component{
   componentDidMount(){
     this.props.doFetchAll();
     this.props.doFetchAllCategories();
-    document.addEventListener('keyup', this.onKeyUp)
+    document.addEventListener('keydown', this.onKeyDown)
   }
 
   componentWillUnmount(){
-    document.removeEventListener('keyup', this.onKeyUp)
+    document.removeEventListener('keydown', this.onKeyDown)
   }
 
-  onKeyUp = e => {
+  onKeyDown = e => {
     if(this.inDialog()) return;
     let {activities, focusedActivity, doFocusActivity, doUnfocusActivity} = this.props;
     switch (e.code) {
       case "Backspace":
-        focusedActivity && this.deleteActivityDialog.show(focusedActivity, doUnfocusActivity);
+        if(!focusedActivity) return;
+        this.deleteActivityDialog.show(focusedActivity, doUnfocusActivity);
         break;
       case "Enter":
-        focusedActivity && this.editActivityDialog.show(focusedActivity);
+        if(!focusedActivity) return;
+        this.editActivityDialog.show(focusedActivity);
         break;
       case "ArrowUp":
-        let prev = focusedActivity && findPrev(focusedActivity, activities, (a, b)=>hourDuration(b.from, a.from));
-        prev && doFocusActivity(prev.id);
+        if(!focusedActivity) return;
+        if(e.metaKey) {
+          e.preventDefault();
+          this.moveActivity(focusedActivity, -MOVE_ACTIVITY_HOURS);
+        } else {
+          let prev = findPrev(focusedActivity, activities, (a, b) => hourDuration(b.from, a.from));
+          prev && doFocusActivity(prev.id);
+        }
         break;
       case "ArrowDown":
-        let next = focusedActivity && findNext(focusedActivity, activities, (a, b)=>hourDuration(b.from, a.from));
-        next && doFocusActivity(next.id);
+        if(!focusedActivity) return;
+        if(e.metaKey) {
+          e.preventDefault();
+          this.moveActivity(focusedActivity, MOVE_ACTIVITY_HOURS);
+        } else {
+          let next = findNext(focusedActivity, activities, (a, b) => hourDuration(b.from, a.from));
+          next && doFocusActivity(next.id);
+        }
         break;
       case "ArrowLeft":
         this.addDays(-1);
@@ -61,6 +76,13 @@ class ActivitiesPage extends Component{
     }
   };
 
+  moveActivity = (activity, hours) =>{
+    let {from, to} = activity;
+    from = Moment(from).add(hours, "hours");
+    to = Moment(to).add(hours, "hours");
+    this.props.doPatchActivity({...activity, from, to})
+  };
+
   addDays = k => {
     let {doChangeDay,day} = this.props;
     doChangeDay(day.clone().add(k, 'days'));
@@ -68,12 +90,12 @@ class ActivitiesPage extends Component{
 
   inDialog = () => !![this.deleteActivityDialog, this.newActivityDialog, this.editActivityDialog].find(d => d.visible());
 
-  makeOnDoubleClickHour = beginHour => e => !this.inDialog() && this.newActivityDialog.show(beginHour);    // due to late init newActivityDialog
+  makeOnDoubleClickHour = beginHour => e => !this.inDialog() && this.newActivityDialog.show(beginHour, e);    // due to late init newActivityDialog
   makeOnDoubleClickActivity = activity => e => !this.inDialog() && this.editActivityDialog.show(activity);
   makeOnClickActivity = activity => e => { e.stopPropagation(); this.props.doFocusActivity(activity.id); };
 
   render(){
-    const {activities, day, postStatus, patchStatus, deleteStatus, focusedActivityId, categoriesByName,
+    const {activities, day, postStatus, patchStatus, deleteStatus, focusedActivityId, categoriesByName, getActivity,
       doCreateActivity, doPatchActivity, doDeleteActivity,
       doFocusActivity, doUnfocusActivity} = this.props;
     let {makeOnDoubleClickHour} = this;
@@ -113,7 +135,7 @@ class ActivitiesPage extends Component{
       <NewActivity ref={r => this.newActivityDialog=r}
                    {...{day, doCreateActivity, postStatus}} />
       <EditActivity ref={r => this.editActivityDialog=r}
-                    {...{day, doPatchActivity, patchStatus}} />
+                    {...{day, doPatchActivity, getActivity, patchStatus}} />
       <ConfirmDeleteActivity ref={r => this.deleteActivityDialog=r}
                              {...{day, deleteStatus, doDeleteActivity}} />
     </div>);
@@ -131,6 +153,7 @@ export default connect(
     activities: getDayActivitiesArray(state),
     focusedActivityId: getFocusedActivityId(state),
     focusedActivity: getFocusedActivity(state),
+    getActivity: getActivity(state),
     categoriesByName: getCategoriesByName(state)
   }),
   dispatch => ({

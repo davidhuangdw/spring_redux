@@ -106,6 +106,7 @@ export const getActivityFetchAll = createSelector(getActivitiesState, state => s
 export const getActivityPost = createSelector(getActivitiesState, state => state.post);
 export const getActivityPatch = createSelector(getActivitiesState, state => state.patch);
 export const getActivityDelete = createSelector(getActivitiesState, state => state.deleteStatus);
+export const getActivity = createSelector(getActivitiesModel, model => id => id && model[id]);
 export const getFocusedActivity = createSelector(getActivitiesModel, getFocusedActivityId, (model,id) => id && model[id]);
 
 export const getActivityApiPendings = createSelector(getActivityFetchAll, getActivityPost, getActivityPatch, getActivityDelete,

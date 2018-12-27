@@ -16,6 +16,8 @@ const hourBarStyle = hour => ({
   color: "white",
 });
 
+const sliceStr = (v, maxlen=4) => (""+v).substring(0, maxlen);
+
 class DayHours extends Component {
   sortedHours = ()=>{
     let {hours, categoriesByName} = this.props;
@@ -32,7 +34,7 @@ class DayHours extends Component {
         {this.sortedHours().map(hour => <div className="flex-columns" key={hour.category}>
 
           <div style={{textAlign: "left"}}> {hour.category} : </div>
-          <div style={hourBarStyle(hour)}>{hour.count} </div>
+          <div style={hourBarStyle(hour)}>{sliceStr(hour.count)} </div>
 
         </div>)}
 

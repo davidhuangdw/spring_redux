@@ -24,7 +24,7 @@ class ActivityForm extends Component {
         <form>
           <TextField name="beginHour" label="Begin" autoComplete="off"
                      value={beginHour} onChange={this.changeText}/> <br/>
-          <TextField name="endHour" label="End"
+          <TextField name="endHour" label="End" autoComplete="off"
                      value={endHour} onChange={this.changeText}/>
           <br/>
           <FormControlLabel
